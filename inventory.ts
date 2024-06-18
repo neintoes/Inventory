@@ -8,7 +8,6 @@ enum ToolbarColorAttribute {
     //% block="text"
     BoxText
 }
-
 enum InventoryColorAttribute {
     //% block="outline"
     InventoryOutline,
@@ -19,7 +18,6 @@ enum InventoryColorAttribute {
     //% block="text"
     InventoryText
 }
-
 enum ItemTextAttribute {
     //% block="name"
     Name,
@@ -28,23 +26,22 @@ enum ItemTextAttribute {
     //% block="tooltip"
     Tooltip
 }
-
+enum ItemNumberAttribute {
+    Value,
+    Quantity
+}
 enum ToolbarNumberAttribute {
     //% block="selected index"
     SelectedIndex,
     //% block="max items"
     MaxItems
 }
-
 enum InventoryNumberAttribute {
     //% block="selected index"
     SelectedIndex,
     //% block="max items"
     MaxItems
 }
-
-//% color="#7732B3"
-//% group="['Item', 'Toolbar', 'Inventory']"
 namespace Inventory {
     /**
      * Create a simple item which holds a single image and some text. 
@@ -56,8 +53,11 @@ namespace Inventory {
          */
         public name: string;
         public image: Image;
+        public animation: Image[];
         public description: string;
-        public tooltip: string = ""
+        public tooltip: string = "";
+        public value: number;
+        public quantity: number;
 
         /**
          * Make a simple item.
@@ -65,11 +65,15 @@ namespace Inventory {
          * @param image: The image of the item. Must be 16x16, otherwise it will not draw
          *  properly. 
          * @param description: The description of the item. Not required and defaults to "".
+         * @param animation: The associated animation with this inventory item.
          */
-        constructor(name: string, image: Image, description: string = null) {
+        constructor(name: string, image: Image, description: string = null, animation?: Image[]) {
             this.name = name;
             this.image = image;
             this.description = description;
+            if (animation) {
+                this.animation = animation;
+            }
         }
 
         /**
@@ -111,6 +115,40 @@ namespace Inventory {
         }
 
         /**
+         * Set the value or quantity of the item.
+         * @param attribute: A property of the ItemNumberAttribute enum.
+         * @param value: The new number of the item.
+         */
+        //% block="item %Inventory(Item) set %attribute to %value"
+        //% weight=20
+        //% group="Item"
+        //% hidden
+        set_number(attribute: ItemNumberAttribute, value: number) {
+            if (attribute == ItemNumberAttribute.Value) {
+                this.value = value;
+            } else if (attribute == ItemNumberAttribute.Quantity) {
+                this.quantity = value;
+            } 
+        }
+
+        /**
+         * Get the value or quantity of the item.
+         * @return: The value.
+         */
+        //% block="item %Inventory(Item) get %attribute"
+        //% weight=10
+        //% group="Item"
+        //% hidden
+        get_number(attribute: ItemNumberAttribute) {
+            if (attribute == ItemNumberAttribute.Value) {
+                return this.value;
+            } else if (attribute == ItemNumberAttribute.Quantity) {
+                return this.quantity;
+            }
+            return 0;
+        }
+
+        /**
          * Set the image of the item.
          * @param new_image: The new image.
          */
@@ -134,13 +172,38 @@ namespace Inventory {
         get_image() {
             return this.image;
         }
+
+        /**
+         * Set the associated animation of the item.
+         * @param new_animation: The new animation.
+         */
+        //% block="item %Inventory(Item) set image to %new_image"
+        //% new_animation.shadow=screen_image_picker
+        //% weight=40
+        //% group="Item"
+        //% hidden
+        set_animation(new_animation: Image[]) {
+            this.animation = new_animation;
+        }
+
+        /**
+         * Get the associated animation of the item.
+         * @return: The animation.
+         */
+        //% block="item %Inventory(Item) get animation"
+        //% weight=30
+        //% group="Item"
+        //% hidden
+        get_animation() {
+            return this.animation;
+        }
     }
 
     /**
      * Create a new item - for blocks. Only rewrapped for blocks.
      * @return: A new Inventory.Item. 
      */
-    //% block="create item with name %name and %image || with description %description"
+    //% block="create item with name %name and %image || with description %description" and animation %animation
     //% blockSetVariable=item
     //% name.dfl="Name"
     //% image.shadow=screen_image_picker
@@ -149,8 +212,8 @@ namespace Inventory {
     //% weight=50
     //% group="Item"
     //% hidden
-    export function create_item(name: string, image: Image, description: string = null) {
-        return new Item(name, image, description)
+    export function create_item(name: string, image: Image, description: string = null, animation: Image[] = null) {
+        return new Item(name, image, description, animation)
     }
 
     /**
@@ -350,7 +413,7 @@ namespace Inventory {
             let padding: number = 2;
             let box_size: number = image_size + (padding * 2);
             let new_image = image.create(
-                ((box_size + 2) * this.max_items) - padding, 
+                ((box_size + 2) * this.max_items) - padding,
                 box_size
             )
             for (let index = 0; index < this.max_items; index++) {
@@ -358,10 +421,10 @@ namespace Inventory {
                     return;
                 }
                 new_image.fillRect(
-                    (box_size + padding) * index, 
-                    0, 
-                    box_size, 
-                    box_size, 
+                    (box_size + padding) * index,
+                    0,
+                    box_size,
+                    box_size,
                     this._box_background_color
                 )
                 let x: number = ((box_size + padding) * index) + 2;
@@ -370,16 +433,16 @@ namespace Inventory {
                     spriteutils.drawTransparentImage(this.items[index].image, new_image, x, y)
                 }
                 new_image.drawRect(
-                    (box_size + padding) * index, 
-                    0, 
-                    box_size, 
-                    box_size, 
+                    (box_size + padding) * index,
+                    0,
+                    box_size,
+                    box_size,
                     index == this.selected ? this._box_selected_outline_color : this._box_outline_color
                 )
                 if (index < this.items.length) {
-                    this.print_right_aligned(new_image, this.items[index].tooltip, 
-                            x + box_size - 3, y + (box_size - 5) - 4, this._box_text_color,
-                            true);
+                    this.print_right_aligned(new_image, this.items[index].tooltip,
+                        x + box_size - 3, y + (box_size - 5) - 4, this._box_text_color,
+                        true);
                 }
             }
             this.setImage(new_image);
@@ -394,12 +457,12 @@ namespace Inventory {
          * @param color: The color of the text.
          * @param use_small_font: Whether to use the 5x5 instead of the 5x8 font.
          */
-        private print_right_aligned(target: Image, text: string, 
-                                    right: number, y: number, 
-                                    color: number, use_small_font: boolean = false) {
+        private print_right_aligned(target: Image, text: string,
+            right: number, y: number,
+            color: number, use_small_font: boolean = false) {
             let text_length_px: number = text.length * 6;
             let label_x: number = right - text_length_px;
-            target.print(text, label_x, y, color, use_small_font? image.font5: image.font8);
+            target.print(text, label_x, y, color, use_small_font ? image.font5 : image.font8);
         }
     }
 
@@ -563,7 +626,7 @@ namespace Inventory {
             }
             return -1;
         }
-        
+
         /**
          * Get the text in the inventory.
          */
@@ -653,39 +716,39 @@ namespace Inventory {
         //% weight=10
         //% group="Inventory"
         public update() {
-            let image_size: number = 16;
-            let padding: number = 1;
-            let box_size: number = image_size + (padding * 2);
+            let image_size2: number = 16;
+            let padding2: number = 1;
+            let box_size2: number = image_size2 + (padding2 * 2);
             let outside_padding: number = 4;
             let width: number = scene.screenWidth() - (outside_padding * 2);
             let height: number = scene.screenHeight() - (outside_padding * 2) - 24;
-            let new_image = image.create(width, height);
-            new_image.fill(this._inv_background_color);
-            new_image.drawRect(0, 0, width, height, this._inv_outline_color);
-            new_image.print(this.text, 2, 2, this._inv_text_color);
+            let new_image2 = image.create(width, height);
+            new_image2.fill(this._inv_background_color);
+            new_image2.drawRect(0, 0, width, height, this._inv_outline_color);
+            new_image2.print(this.text, 2, 2, this._inv_text_color);
             if (this.selected < this.items.length && this.selected != -1) {
                 let text: string = this.items[this.selected].name;
-                this.print_right_aligned(new_image, text, width - 2, 2, this._inv_text_color, false);
+                this.print_right_aligned(new_image2, text, width - 2, 2, this._inv_text_color, false);
             }
-            new_image.drawLine(2, 11, width - 3, 11, this._inv_outline_color);
-            for (let index = 0; index < this.max_items; index++) {
-                if (index > this.max_items - 1) {
+            new_image2.drawLine(2, 11, width - 3, 11, this._inv_outline_color);
+            for (let index2 = 0; index2 < this.max_items; index2++) {
+                if (index2 > this.max_items - 1) {
                     return;
                 }
-                let x: number = ((index % 8) * box_size) + 4;
-                let y: number = (Math.idiv(index, 8) * box_size) + 14;
-                if (index < this.items.length) {
-                    if (index == this.selected) {
-                        new_image.fillRect(x - 1, y - 1, box_size, box_size, 
-                                           this._inv_selected_outline_color);
+                let x2: number = ((index2 % 8) * box_size2) + 4;
+                let y2: number = (Math.idiv(index2, 8) * box_size2) + 14;
+                if (index2 < this.items.length) {
+                    if (index2 == this.selected) {
+                        new_image2.fillRect(x2 - 1, y2 - 1, box_size2, box_size2,
+                            this._inv_selected_outline_color);
                     }
-                    spriteutils.drawTransparentImage(this.items[index].image, new_image, x, y);
-                    this.print_right_aligned(new_image, this.items[index].tooltip, 
-                                             x + box_size, y + (box_size - 5) - 1, this._inv_text_color,
-                                             true);
+                    spriteutils.drawTransparentImage(this.items[index2].image, new_image2, x2, y2);
+                    this.print_right_aligned(new_image2, this.items[index2].tooltip,
+                        x2 + box_size2, y2 + (box_size2 - 5) - 1, this._inv_text_color,
+                        true);
                 }
             }
-            this.setImage(new_image);
+            this.setImage(new_image2);
         }
 
         /**
@@ -697,12 +760,12 @@ namespace Inventory {
          * @param color: The color of the text.
          * @param use_small_font: Whether to use the 5x5 instead of the 5x8 font.
          */
-        private print_right_aligned(target: Image, text: string, 
-                                    right: number, y: number, 
-                                    color: number, use_small_font: boolean = false) {
-            let text_length_px: number = text.length * 6;
-            let label_x: number = right - text_length_px;
-            target.print(text, label_x, y, color, use_small_font? image.font5: image.font8);
+        private print_right_aligned(target: Image, text: string,
+            right: number, y: number,
+            color: number, use_small_font: boolean = false) {
+            let text_length_px2: number = text.length * 6;
+            let label_x2: number = right - text_length_px2;
+            target.print(text, label_x2, y, color, use_small_font ? image.font5 : image.font8);
         }
     }
 
