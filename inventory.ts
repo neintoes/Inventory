@@ -435,7 +435,7 @@ namespace Inventory {
                 item_to_change.set_text(ItemTextAttribute.Tooltip, "2");
             } else {
                 item_to_change.set_text(ItemTextAttribute.Tooltip,
-                    convertToText(parseFloat(item_to_change.get_text(ItemTextAttribute.Tooltip))) + value);
+                    convertToText(parseFloat(item_to_change.get_text(ItemTextAttribute.Tooltip)) + value));
                 if (parseInt((item_to_change.get_text(ItemTextAttribute.Tooltip))) < 1) {
                     this.get_items().removeElement(item_to_change);
                 }
