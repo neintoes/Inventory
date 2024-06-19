@@ -361,6 +361,24 @@ namespace Inventory {
         }
 
         /**
+         * Get an item from the toolbar by its name.
+         * @param name: The name of the item to retrieve.
+         * @return: The matching Item object, or null if not found.
+         */
+        //% block="toolbar %Inventory(toolbar) get item called %name"
+        //% weight=60
+        //% group="Toolbar"
+        //% hidden
+        public get_item(name: string): Item {
+            for (let i = 0; i < this._items.length; i++) {
+                if (this._items[i].name == name) {
+                    return this._items[i];
+                }
+            }
+            return null;
+        }
+
+        /**
          * Set a specific part of the toolbar to a specific color.
          * @param attribute: A property of the ToolbarColorAttribute enum.
          * @param color: A number which should be the new color of the attribute.
