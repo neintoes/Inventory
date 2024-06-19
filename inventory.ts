@@ -251,14 +251,14 @@ namespace Inventory {
         /**
          * Cycle the selected toolbar item.
          */
-        //% block="Cycle the selected toolbar item || by %positions positions"
+        //% block="cycle selected toolbar item || by %positions positions"
         //% expandableArgumentMode="toggle"
-        //% weight=50
-        //% group="Item"
+        //% weight=100
+        //% group="Toolbar"
         //% hidden
         public cycle_selection(positions: number = 1) {
             this._selected += positions;
-            if (this._selected > this._max_items) {
+            if (this._selected > this._max_items - 1) {
                 this._selected = 0;
             }
             this.update();
