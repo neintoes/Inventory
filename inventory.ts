@@ -251,11 +251,9 @@ namespace Inventory {
         /**
          * Cycle the selected toolbar item.
          */
-        //% block="cycle selected toolbar item || by %positions positions"
-        //% expandableArgumentMode="toggle"
-        //% weight=100
+        //% block="cycle selected toolbar item"
+        //% weight=35
         //% group="Toolbar"
-        //% hidden
         public cycle_selection(positions: number = 1) {
             this._selected += positions;
             if (this._selected > this._max_items - 1) {
