@@ -27,7 +27,9 @@ enum ItemTextAttribute {
     Tooltip
 }
 enum ItemNumberAttribute {
+    //% block="value"
     Value,
+    //% block="quantity"
     Quantity
 }
 enum ToolbarNumberAttribute {
@@ -53,27 +55,22 @@ namespace Inventory {
          */
         public name: string;
         public image: Image;
-        public animation: Image[];
         public description: string;
         public tooltip: string = "";
-        public value: number;
         public quantity: number;
+        public value: number;
 
         /**
          * Make a simple item.
          * @param name: The name of the item. 
          * @param image: The image of the item. Must be 16x16, otherwise it will not draw
          *  properly. 
-         * @param description: The description of the item. Not required and defaults to "".
-         * @param animation: The associated animation with this inventory item.
+         * @param quantity: The quantity of the item, not required and defaults to '1'.
          */
-        constructor(name: string, image: Image, description: string = null, animation?: Image[]) {
+        constructor(name: string, image: Image, quantity: number = 1) {
             this.name = name;
             this.image = image;
-            this.description = description;
-            if (animation) {
-                this.animation = animation;
-            }
+            this.quantity = quantity;
         }
 
         /**
@@ -132,6 +129,23 @@ namespace Inventory {
         }
 
         /**
+         * Change the value or quantity by a number.
+         * @param attribute: A property of the ItemNumberAttribute enum.
+         * @param value: The amount to change the value by.
+         */
+        //% block="item %Inventory(Item) change %attribute by %value"
+        //% weight=20
+        //% group="Item"
+        //% hidden
+        change_number(attribute: ItemNumberAttribute, value: number) {
+            if (attribute == ItemNumberAttribute.Value) {
+                this.value += value;
+            } else if (attribute == ItemNumberAttribute.Quantity) {
+                this.quantity += value;
+            }
+        }
+
+        /**
          * Get the value or quantity of the item.
          * @return: The value.
          */
@@ -172,38 +186,13 @@ namespace Inventory {
         get_image() {
             return this.image;
         }
-
-        /**
-         * Set the associated animation of the item.
-         * @param new_animation: The new animation.
-         */
-        //% block="item %Inventory(Item) set image to %new_image"
-        //% new_animation.shadow=screen_image_picker
-        //% weight=40
-        //% group="Item"
-        //% hidden
-        set_animation(new_animation: Image[]) {
-            this.animation = new_animation;
-        }
-
-        /**
-         * Get the associated animation of the item.
-         * @return: The animation.
-         */
-        //% block="item %Inventory(Item) get animation"
-        //% weight=30
-        //% group="Item"
-        //% hidden
-        get_animation() {
-            return this.animation;
-        }
     }
 
     /**
      * Create a new item - for blocks. Only rewrapped for blocks.
      * @return: A new Inventory.Item. 
      */
-    //% block="create item with name %name and %image || with description %description" and animation %animation
+    //% block="create item with name %name and %image || with quantity %quantity"
     //% blockSetVariable=item
     //% name.dfl="Name"
     //% image.shadow=screen_image_picker
@@ -212,8 +201,8 @@ namespace Inventory {
     //% weight=50
     //% group="Item"
     //% hidden
-    export function create_item(name: string, image: Image, description: string = null, animation: Image[] = null) {
-        return new Item(name, image, description, animation)
+    export function create_item(name: string, image: Image, quantity: number = 1) {
+        return new Item(name, image, quantity)
     }
 
     /**
@@ -255,6 +244,23 @@ namespace Inventory {
          */
         public set selected(index: number) {
             this._selected = index;
+            this.update();
+        }
+
+
+        /**
+         * Cycle the selected toolbar item.
+         */
+        //% block="Cycle the selected toolbar item || by %positions positions"
+        //% expandableArgumentMode="toggle"
+        //% weight=50
+        //% group="Item"
+        //% hidden
+        public cycle_selection(positions: number = 1) {
+            this._selected += positions;
+            if (this._selected > this._max_items) {
+                this._selected = 0;
+            }
             this.update();
         }
 
@@ -422,28 +428,6 @@ namespace Inventory {
         }
 
         /**
-         * change the quantity of a chosen item in the toolbar.
-         * @param item_name: The name of the item that we want to change the quantity of.
-         * @param value: How much we want to change the quantity of the item by.
-         */
-        //% block="change quantity of %item_name by %value"
-        //% weight=35
-        //% group="Toolbar"
-        public change_quantity_by(item_name: string, value: number): void {
-            let item_to_change = this.get_item(item_name);
-            if (item_to_change.get_text(ItemTextAttribute.Tooltip) == "") {
-                item_to_change.set_text(ItemTextAttribute.Tooltip, "2");
-            } else {
-                item_to_change.set_text(ItemTextAttribute.Tooltip,
-                    convertToText(parseFloat(item_to_change.get_text(ItemTextAttribute.Tooltip)) + value));
-                if (parseInt((item_to_change.get_text(ItemTextAttribute.Tooltip))) < 1) {
-                    this.get_items().removeElement(item_to_change);
-                }
-            }
-            this.update();
-        }
-
-        /**
          * Update the image of the toolbar.
          */
         //% block="toolbar %Inventory(toolbar) force redraw"
@@ -480,7 +464,7 @@ namespace Inventory {
                     index == this.selected ? this._box_selected_outline_color : this._box_outline_color
                 )
                 if (index < this.items.length) {
-                    this.print_right_aligned(new_image, this.items[index].tooltip,
+                    this.print_right_aligned(new_image, (this.items[index].quantity).toString(),
                         x + box_size - 3, y + (box_size - 5) - 4, this._box_text_color,
                         true);
                 }
