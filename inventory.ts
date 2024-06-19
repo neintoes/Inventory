@@ -128,7 +128,7 @@ namespace Inventory {
                 this.value = value;
             } else if (attribute == ItemNumberAttribute.Quantity) {
                 this.quantity = value;
-            } 
+            }
         }
 
         /**
@@ -419,6 +419,28 @@ namespace Inventory {
                 return this._box_text_color;
             }
             return -1;
+        }
+
+        /**
+         * change the quantity of a chosen item in the toolbar.
+         * @param item_name: The name of the item that we want to change the quantity of.
+         * @param value: How much we want to change the quantity of the item by.
+         */
+        //% block="change quantity of %item_name by %value"
+        //% weight=35
+        //% group="Toolbar"
+        public change_quantity_by(item_name: string, value: number): void {
+            let item_to_change = this.get_item(item_name);
+            if (item_to_change.get_text(ItemTextAttribute.Tooltip) == "") {
+                item_to_change.set_text(ItemTextAttribute.Tooltip, "2");
+            } else {
+                item_to_change.set_text(ItemTextAttribute.Tooltip,
+                    convertToText(parseFloat(item_to_change.get_text(ItemTextAttribute.Tooltip))) + value);
+                if (parseInt((item_to_change.get_text(ItemTextAttribute.Tooltip))) < 1) {
+                    this.get_items().removeElement(item_to_change);
+                }
+            }
+            this.update();
         }
 
         /**
