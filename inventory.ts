@@ -233,7 +233,7 @@ namespace Inventory {
         }
 
         /**
-         * Get the selected item.
+         * Get the selected item index.
          */
         public get selected() {
             return this._selected;
@@ -247,6 +247,17 @@ namespace Inventory {
             this.update();
         }
 
+        /**
+         * Get the item selected by the modal in the toolbar.
+         * @return: The currently selected item.
+         */
+        //% block="get selected item"
+        //% weight=84
+        //% group="Toolbar"
+        //% hidden
+        public get_selected_item() {
+            return this.items[this.selected];
+        }
 
         /**
          * Cycle the selected toolbar item.
@@ -565,6 +576,11 @@ namespace Inventory {
             return this.items;
         }
 
+        private get_item_by_name(item_name: string) {
+            return this._items.find(x => x.name == item_name);
+        }
+
+
         /**
          * Set the items in the inventory.
          */
@@ -729,6 +745,26 @@ namespace Inventory {
                 return this._inv_text_color;
             }
             return -1;
+        }
+
+
+        /**
+         * change the quantity of a chosen item in the toolbar.
+         * @param item_name: The name of the item that we want to change the quantity of.
+         * @param value: How much we want to change the quantity of the item by.
+         */
+        //% block="change quantity of %item_name in toolbar by %value"
+        //% weight=35
+        //% group="Toolbar"
+        public change_item_quantity_by(item_name: string, value: number): void {
+            let selected_item = this.get_item_by_name(item_name)
+            if (selected_item) {
+                selected_item.quantity += value;
+                if (selected_item.quantity < 0) {
+                    selected_item.quantity = 0;
+                }
+                this.update();
+            }
         }
 
         /**
