@@ -260,6 +260,13 @@ namespace Inventory {
         }
 
         /**
+         * Gets an item int he toolbar by its name property.
+         */
+        private get_item_by_name(item_name: string) {
+            return this._items.find(x => x.name == item_name);
+        }
+
+        /**
          * Cycle the selected toolbar item.
          */
         //% block="cycle selected toolbar item"
@@ -594,11 +601,6 @@ namespace Inventory {
         public get_items() {
             return this.items;
         }
-
-        private get_item_by_name(item_name: string) {
-            return this._items.find(x => x.name == item_name);
-        }
-
 
         /**
          * Set the items in the inventory.
