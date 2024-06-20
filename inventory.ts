@@ -461,6 +461,22 @@ namespace Inventory {
                 this.update();
             }
         }
+
+        //% block="add item $item to toolbar || with quantity $quantityToAdd"
+        //% expandableArgumentMode="toggle"
+        //% group="Toolbar"
+        //% weight=40
+        public add_item(item: Inventory.Item, quantityToAdd: number = 1): void {
+            let existingItem = this._items.find(x => x.name === item.name);
+            if (existingItem) {
+                existingItem.quantity += quantityToAdd;
+            } else {
+                let newItem.quantity = new Inventory.Item(item.name, item.image, quantityToAdd);
+                this._items.push(newItem);
+            }
+            this.update();
+        }
+
         
         /**
          * Update the image of the toolbar.
