@@ -437,6 +437,25 @@ namespace Inventory {
         }
 
         /**
+         * change the quantity of a chosen item in the toolbar.
+         * @param item_name: The name of the item that we want to change the quantity of.
+         * @param value: How much we want to change the quantity of the item by.
+         */
+        //% block="change quantity of %item_name in toolbar by %value"
+        //% weight=35
+        //% group="Toolbar"
+        public change_item_quantity(item_name: string, value: number): void {
+            let selected_item = this.get_item_by_name(item_name)
+            if (selected_item) {
+                selected_item.quantity += value;
+                if (selected_item.quantity < 0) {
+                    selected_item.quantity = 0;
+                }
+                this.update();
+            }
+        }
+        
+        /**
          * Update the image of the toolbar.
          */
         //% block="toolbar %Inventory(toolbar) force redraw"
@@ -745,26 +764,6 @@ namespace Inventory {
                 return this._inv_text_color;
             }
             return -1;
-        }
-
-
-        /**
-         * change the quantity of a chosen item in the toolbar.
-         * @param item_name: The name of the item that we want to change the quantity of.
-         * @param value: How much we want to change the quantity of the item by.
-         */
-        //% block="change quantity of %item_name in toolbar by %value"
-        //% weight=35
-        //% group="Toolbar"
-        public change_item_quantity_by(item_name: string, value: number): void {
-            let selected_item = this.get_item_by_name(item_name)
-            if (selected_item) {
-                selected_item.quantity += value;
-                if (selected_item.quantity < 0) {
-                    selected_item.quantity = 0;
-                }
-                this.update();
-            }
         }
 
         /**
