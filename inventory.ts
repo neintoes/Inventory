@@ -31,6 +31,8 @@ enum ItemNumberAttribute {
     Value,
     //% block="quantity"
     Quantity
+    //% block="duration"
+    Duration
 }
 enum ToolbarNumberAttribute {
     //% block="selected index"
