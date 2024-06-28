@@ -30,7 +30,7 @@ enum ItemNumberAttribute {
     //% block="value"
     Value,
     //% block="quantity"
-    Quantity
+    Quantity,
     //% block="duration"
     Duration
 }
