@@ -63,6 +63,8 @@ namespace Inventory {
         public tooltip: string = "";
         public quantity: number;
         public value: number;
+        public duration: number;
+        public cooldown: number;
 
         /**
          * Make a simple item.
