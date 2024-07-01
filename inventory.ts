@@ -497,7 +497,7 @@ namespace Inventory {
             if (existingItem) {
                 existingItem.quantity += quantityToAdd;
             } else {
-                let newItem = new Item(item.name, item.image, quantityToAdd);
+                let newItem = new Item(item.name, item.image, quantityToAdd, item.value);
                 this._items.push(newItem);
             }
             this.update();
