@@ -266,7 +266,7 @@ namespace Inventory {
         }
 
         /**
-         * Gets an item int he toolbar by its name property.
+         * Gets an item in the toolbar by its name property.
          */
         private get_item_by_name(item_name: string) {
             return this._items.find(x => x.name == item_name);
@@ -275,7 +275,7 @@ namespace Inventory {
         /**
          * Cycle the selected toolbar item.
          */
-        //% block="cycle selected toolbar item"
+        //% block="toolbar %Inventory(toolbar) cycle selected item"
         //% weight=35
         //% group="Toolbar"
         public cycle_selection(positions: number = 1) {
@@ -454,7 +454,7 @@ namespace Inventory {
          * @param item_name: The name of the item that we want to change the quantity of.
          * @param value: How much we want to change the quantity of the item by.
          */
-        //% block="change quantity of %item_name in toolbar by %value"
+        //% block="toolbar %Inventory(toolbar) change quantity of %item_name by %value"
         //% weight=35
         //% group="Toolbar"
         public change_item_quantity(item_name: string, value: number): void {
@@ -468,7 +468,7 @@ namespace Inventory {
             }
         }
 
-        //% block="add item $item to toolbar || with quantity $quantityToAdd"
+        //% block="toolbar %Inventory(toolbar) add item $item || with quantity $quantityToAdd"
         //% expandableArgumentMode="toggle"
         //% group="Toolbar"
         //% weight=40
