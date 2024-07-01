@@ -73,10 +73,11 @@ namespace Inventory {
          *  properly. 
          * @param quantity: The quantity of the item, not required and defaults to '1'.
          */
-        constructor(name: string, image: Image, quantity: number = 1) {
+        constructor(name: string, image: Image, quantity: number = 1, value: number = 1) {
             this.name = name;
             this.image = image;
             this.quantity = quantity;
+            this.value = value;
         }
 
         /**
@@ -198,7 +199,7 @@ namespace Inventory {
      * Create a new item - for blocks. Only rewrapped for blocks.
      * @return: A new Inventory.Item. 
      */
-    //% block="create item with name %name and %image || with quantity %quantity"
+    //% block="create item with name %name and %image || with quantity %quantity of value %value"
     //% blockSetVariable=item
     //% name.dfl="Name"
     //% image.shadow=screen_image_picker
@@ -207,8 +208,8 @@ namespace Inventory {
     //% weight=50
     //% group="Item"
     //% hidden
-    export function create_item(name: string, image: Image, quantity: number = 1) {
-        return new Item(name, image, quantity)
+    export function create_item(name: string, image: Image, quantity: number = 1, value: number = 1) {
+        return new Item(name, image, quantity, value)
     }
 
     /**
@@ -483,7 +484,7 @@ namespace Inventory {
             this.update();
         }
 
-        
+
         /**
          * Update the image of the toolbar.
          */
