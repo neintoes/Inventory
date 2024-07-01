@@ -31,6 +31,8 @@ enum ItemNumberAttribute {
     Value,
     //% block="quantity"
     Quantity,
+    //% block="cooldown"
+    Cooldown,
     //% block="duration"
     Duration
 }
