@@ -455,34 +455,43 @@ namespace Inventory {
          * @param item_name: The name of the item that we want to set the quantity of.
          * @param value: What we would like to set the quantity of the item to.
          */
-        //% block="toolbar %Inventory(toolbar) set quantity of %item_name to %value"
+        //% block="toolbar %Inventory(toolbar) set quantity of %item_name to %value || delete if none left %deleteIfNoneLeft"
+        //% expandableArgumentMode="toggle"
         //% weight=35
         //% group="Toolbar"
-        public set_item_quantity(item_name: string, value: number): void {
-            let selected_item = this.get_item_by_name(item_name)
+        public set_item_quantity(item_name: string, value: number, deleteIfNoneLeft: boolean = false): void {
+            let selected_item = this.get_item_by_name(item_name);
             if (selected_item) {
                 selected_item.quantity = value;
-                if (selected_item.quantity < 0) {
+                if (selected_item.quantity < 1) {
                     selected_item.quantity = 0;
+                    if (deleteIfNoneLeft) {
+                        this._items = this._items.filter(item => item.name !== item_name);
+                    }
                 }
                 this.update();
             }
         }
-        
+
+
         /**
          * change the quantity of a chosen item in the toolbar.
          * @param item_name: The name of the item that we want to change the quantity of.
          * @param value: How much we want to change the quantity of the item by.
          */
-        //% block="toolbar %Inventory(toolbar) change quantity of %item_name by %value"
+        //% block="toolbar %Inventory(toolbar) change quantity of %item_name by %value || delete if none left %deleteIfNoneLeft"
+        //% expandableArgumentMode="toggle"
         //% weight=35
         //% group="Toolbar"
-        public change_item_quantity(item_name: string, value: number): void {
+        public change_item_quantity(item_name: string, value: number, deleteIfNoneLeft: boolean = false): void {
             let selected_item = this.get_item_by_name(item_name)
             if (selected_item) {
                 selected_item.quantity += value;
                 if (selected_item.quantity < 0) {
                     selected_item.quantity = 0;
+                    if (deleteIfNoneLeft) {
+                        this._items = this._items.filter(item => item.name !== item_name);
+                    }
                 }
                 this.update();
             }
