@@ -463,7 +463,7 @@ namespace Inventory {
             let selected_item = this.get_item_by_name(item_name);
             if (selected_item) {
                 selected_item.quantity = value;
-                if (selected_item.quantity < 1) {
+                if (selected_item.quantity <= 0) {
                     selected_item.quantity = 0;
                     if (deleteIfNoneLeft) {
                         this._items = this._items.filter(item => item.name !== item_name);
@@ -487,7 +487,7 @@ namespace Inventory {
             let selected_item = this.get_item_by_name(item_name)
             if (selected_item) {
                 selected_item.quantity += value;
-                if (selected_item.quantity < 0) {
+                if (selected_item.quantity <= 0) {
                     selected_item.quantity = 0;
                     if (deleteIfNoneLeft) {
                         this._items = this._items.filter(item => item.name !== item_name);
