@@ -50,6 +50,111 @@ enum InventoryNumberAttribute {
 }
 namespace Inventory {
     /**
+     * Create an item_pool for storing Inventory Items.
+     */
+    export class ItemPool{
+        /**
+         * Define (extra) variables that are part of the class.
+         */
+        private _items: Item[];
+
+        /**
+         * Make an item pool.
+         */
+        constructor(items: Item[] = []) {
+            this._items = items;
+        }
+
+        /**
+         * Get the items in the toolbar.
+         */
+        public get items() {
+            return this._items;
+        }
+
+        /**
+         * Get the items in the item pool. Only rewrapped for blocks.
+         * @return: The items, as an array of Item.
+         */
+        //% block="item pool %Inventory(item_pool) get items"
+        //% weight=80
+        //% group="Item Pool"
+        //% hidden
+        public get_items() {
+            return this.items;
+        }
+
+        /**
+         * Set the items in the toolbar.
+         */
+        public set items(new_items: Item[]) {
+            this._items = new_items;
+        }
+
+        /**
+         * Set the items in the item pool. Only rewrapped for blocks.
+         */
+        //% block="item pool %Inventory(item_pool) set items to %new_items"
+        //% new_items.shadow="lists_create_with"
+        //% weight=90
+        //% group="Item Pool"
+        //% hidden
+        public set_items(new_items: Item[]) {
+            this.items = new_items;
+        }
+
+        /**
+         * Gets an item in the toolbar by its name property.
+         */
+        private get_item_by_name(item_name: string) {
+            return this._items.find(x => x.name == item_name);
+        }
+
+        /**
+         * Get an item from the item pool by its name.
+         * @param name: The name of the item to retrieve.
+         * @return: The matching Item object, or null if not found.
+         */
+        //% block="item pool %Inventory(item_pool) get item called %name"
+        //% weight=60
+        //% group="Item Pool"
+        //% hidden
+        public get_item(name: string): Item {
+            return this.get_item_by_name(name);
+        }
+
+        //% block="toolbar %Inventory(toolbar) add item $item || with quantity $quantityToAdd"
+        //% expandableArgumentMode="toggle"
+        //% group="Item Pool"
+        //% weight=40
+        public add_item(item: Inventory.Item): void {
+            let existingItem = this._items.find(x => x.name === item.name);
+            if (existingItem) {
+                return
+            } else {
+                this._items.push(item);
+            }
+        }
+    }
+
+    /**
+     * Create a new item pool - for blocks.
+     * @return: A new Item Pool.
+     */
+    //% block="create item pool with items %items"
+    //% blockSetVariable=item_pool
+    //% items.shadow="lists_create_with"
+    //% max_items.dfl=3
+    //% weight=100
+    //% group="Item Pool"
+    //% hidden
+    export function createItemPool(items: Item[]) {
+        return new ItemPool(items);
+    }
+
+// ------------------------------------------------------------------
+
+    /**
      * Create a simple item which holds a single image and some text. 
      * Can also contain a description which isn't used by the Inventory extension. 
      */
