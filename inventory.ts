@@ -193,11 +193,12 @@ namespace Inventory {
          *  properly. 
          * @param quantity: The quantity of the item, not required and defaults to '1'.
          */
-        constructor(name: string, image: Image, quantity: number = 1, value: number = 1) {
+        constructor(name: string, image: Image, quantity: number = 1, value: number = 1, cooldown: number = 1) {
             this.name = name;
             this.image = image;
             this.quantity = quantity;
             this.value = value;
+            this.cooldown = cooldown;
         }
 
         /**
