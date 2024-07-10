@@ -320,7 +320,7 @@ namespace Inventory {
      * Create a new item - for blocks. Only rewrapped for blocks.
      * @return: A new Inventory.Item. 
      */
-    //% block="create item with name %name and %image || with quantity %quantity of value %value and cooldown %cooldown"
+    //% block="create item with name %name and %image with quantity %quantity || of value %value and cooldown %cooldown"
     //% blockSetVariable=item
     //% name.dfl="Name"
     //% image.shadow=screen_image_picker
@@ -328,6 +328,7 @@ namespace Inventory {
     //% description.dfl="Description"
     //% weight=50
     //% group="Item"
+    //% inlineInputMode=inline
     //% hidden
     export function create_item(name: string, image: Image, quantity: number = 1, value: number = 1, cooldown: number = 1) {
         return new Item(name, image, quantity, value, cooldown);
