@@ -320,7 +320,7 @@ namespace Inventory {
      * Create a new item - for blocks. Only rewrapped for blocks.
      * @return: A new Inventory.Item. 
      */
-    //% block="create item with name %name and %image with quantity %quantity || of value %value and cooldown %cooldown"
+    //% block="create item with name %name and %image || with quantity %quantity of value %value and cooldown %cooldown"
     //% blockSetVariable=item
     //% name.dfl="Name"
     //% image.shadow=screen_image_picker
