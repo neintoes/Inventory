@@ -380,7 +380,7 @@ namespace Inventory {
          * Get the item selected by the modal in the toolbar.
          * @return: The currently selected item.
          */
-        //% block="get selected item"
+        //% block="toolbar %Inventory(toolbar) get selected item"
         //% weight=84
         //% group="Toolbar"
         //% hidden
